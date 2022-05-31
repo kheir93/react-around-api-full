@@ -1,0 +1,14 @@
+@import url(./__image/place-modal__image.css);
+@import url(./__caption/place-modal__caption.css);
+@import url(./__close/place-modal__close.css);
+@import url(./__figure/place-modal__figure.css);
+
+.place-modal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  background-color: rgba(0,0,0,1);
+}

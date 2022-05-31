@@ -1,0 +1,6 @@
+.place-modal__figure {
+  max-width: 75vh;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}

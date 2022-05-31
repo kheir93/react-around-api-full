@@ -1,0 +1,6 @@
+.form__title_center {
+  display: flex;
+  width: 80%;
+  text-align: center;
+  color: black;
+}

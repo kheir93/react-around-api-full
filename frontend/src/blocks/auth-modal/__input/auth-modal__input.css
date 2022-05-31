@@ -1,0 +1,22 @@
+.auth-modal__input {
+  color: #fff;
+  width: 100%;
+  margin: 30px auto auto;
+  border: 0;
+  box-sizing: border-box;
+  background-color: transparent;
+  border-bottom: 2px solid rgb(255, 255, 255);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  padding-bottom: 14px;
+}
+
+input:-webkit-autofill {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: white !important
+}
+
+.auth-modal__input:focus {
+  outline: 0;
+}

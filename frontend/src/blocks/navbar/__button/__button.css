@@ -1,0 +1,15 @@
+.navbar__button  {
+  width: 24px;
+  height: 2px;
+  margin-bottom: 9px;
+  background-color: transparent;
+  background-image: url(../../../images/navbar.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.navbar__button:last-child {
+  margin-bottom: 0;
+}
+
+

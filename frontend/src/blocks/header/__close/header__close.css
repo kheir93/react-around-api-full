@@ -1,0 +1,41 @@
+.header__close {
+  display: none;
+  background-image: url(../../../images/CloseIcon.svg);
+  border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 30px;
+  height: 30px;
+  /* margin-top: -40px;*/
+  margin: auto 20px 0 auto;
+  padding: 0;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.header__close:active {
+  transform: rotate(45deg);
+}
+
+.header__close:hover {
+  opacity: 0.4;
+}
+
+.header__close:focus {
+  outline: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .header__close {
+    /* margin-top: -40px;
+    margin-left: 90%; */
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .header__close {
+    /* margin-top: -60px;
+    margin-left: 85%; */
+  }
+}

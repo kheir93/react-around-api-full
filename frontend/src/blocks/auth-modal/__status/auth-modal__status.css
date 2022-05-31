@@ -1,0 +1,11 @@
+.auth-modal__status {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+@media screen and (max-width: 320px) {
+  .auth-modal__status {
+    font-size: 12px;
+  }
+}

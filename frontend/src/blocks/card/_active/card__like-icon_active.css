@@ -1,0 +1,5 @@
+.card__like-icon_active {
+  outline: none;
+  z-index: 3;
+  background-image: url(../../../images/like_active.svg);
+}

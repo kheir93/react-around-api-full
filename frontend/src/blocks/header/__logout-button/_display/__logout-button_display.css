@@ -1,0 +1,7 @@
+@media (max-width: 400px) {
+  .header__logout-button_display {
+    display: flex;
+    grid-area: logout;
+    margin: 0 auto 25px auto;
+  }
+}

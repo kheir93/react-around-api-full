@@ -1,0 +1,24 @@
+.auth-modal__submit {
+  margin: 216px auto auto;
+  background-color: #fff;
+  border-radius: 2px;
+  width: 85%;
+  height: 50px;
+  color: #000;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+}
+
+.auth-modal__submit:hover {
+  opacity: 0.8;
+}
+
+@media screen and (max-width: 320px) {
+  .auth-modal__submit {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}

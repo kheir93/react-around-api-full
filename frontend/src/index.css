@@ -1,0 +1,44 @@
+@import url(./vendor/normalize.css);
+@import url(./vendor/fonts/inter.css);
+@import url(./blocks/tooltip-modal/tooltip-modal.css);
+@import url(./blocks/navbar/navbar.css);
+@import url(./blocks/navbar/_remove.css);
+@import url(./blocks/auth-modal/auth-modal.css);
+@import url(./blocks/auth-modal/__submit/_inactive/auth-modal__submit_inactive.css);
+@import url(./blocks/auth-modal/__input-error/_active/auth-modal__input-error_active.css);
+@import url(./blocks/auth-modal/__input/_type/auth-modal__input_type_error.css);
+@import url(./blocks/card/card.css);
+@import url(./blocks/card/_remove/card_remove.css);
+@import url(./blocks/card/_active/card__like-icon_active.css);
+@import url(./blocks/root/root.css);
+@import url(./blocks/header/header.css);
+@import url(./blocks/header/__mobile/_open/header__mobile_open.css);
+@import url(./blocks/header/__logout-button/_display/__logout-button_display.css);
+@import url(./blocks/header/__user-display-info/_display/__user-display-info_display.css);
+@import url(./blocks/header/__close/_display/header__close_display.css);
+@import url(./blocks/logo/logo.css);
+@import url(./blocks/logo-mobile/logo-mobile.css);
+@import url(./blocks/profile/profile.css);
+@import url(./blocks/elements/elements.css);
+@import url(./blocks/footer/footer.css);
+@import url(./blocks/form/form.css);
+@import url(./blocks/form/__close/_center/form__close_center.css);
+@import url(./blocks/form/__title/_center/form__title_center.css);
+@import url(./blocks/form/__save/_inactive/form__save_inactive.css);
+@import url(./blocks/form/__input-error/_active/form__input-error_active.css);
+@import url(./blocks/form/__input/_type/form__input_type_error.css);
+@import url(./blocks/avatar-modal/avatar-modal.css);
+@import url(./blocks/edit-modal/edit-modal.css);
+@import url(./blocks/add-modal/add-modal.css);
+@import url(./blocks/place-modal/place-modal.css);
+@import url(./blocks/delete-modal/delete-modal.css);
+@import url(./blocks/popup/popup.css);
+@import url(./blocks/popup/_open/popup_open.css);
+@import url(./blocks/card/card__delete_hidden.css);
+@import url(./blocks/card/card__delete_visible.css);
+
+
+
+
+
+

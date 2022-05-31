@@ -1,0 +1,7 @@
+@media screen and (max-width: 320px) {
+  .form__close_center {
+    /* margin-top: -60px; */
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

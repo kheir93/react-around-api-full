@@ -1,0 +1,14 @@
+@import url(./__close-button/popup__close-button.css);
+@import url(./__close-button-container/popup__close-button-container.css);
+
+@keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 1;
+  }
+}
+
+.popup {
+  display: none;
+  animation: fadein 0.5s;
+  color: #000;
+}

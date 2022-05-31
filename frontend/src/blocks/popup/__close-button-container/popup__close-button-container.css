@@ -1,0 +1,6 @@
+.popup__close-button-container {
+  display: flex;
+  width:480px;
+  height: 80px;
+   margin-top: -40px;
+}

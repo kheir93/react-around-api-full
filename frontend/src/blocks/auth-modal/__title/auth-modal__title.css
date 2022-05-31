@@ -1,0 +1,23 @@
+.auth-modal__title {
+  width: 85%;
+  margin: 25px auto 15px;
+  text-align: center;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+@media screen and (max-width: 768px) {
+  .auth-modal__title {
+    font-size: 20px;
+    line-height: 25px;
+  }
+}
+
+
+@media screen and (max-width: 320px) {
+  .auth-modal__title {
+    font-size: 18px;
+    line-height: 22px;
+  }
+}

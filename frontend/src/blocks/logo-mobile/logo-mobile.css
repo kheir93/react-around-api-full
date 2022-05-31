@@ -1,0 +1,7 @@
+.logo-mobile {
+  display: flex;
+  margin-left: 20px;
+  width: 126px;
+  height: 24px;
+  grid-area: logo;
+}

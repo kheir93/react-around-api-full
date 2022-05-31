@@ -1,0 +1,28 @@
+@import url(./__logout-button/header__logout-button.css);
+@import url(./__user-display-info/header__user-display-info.css);
+@import url(./__auth-info/header__auth-info.css);
+@import url(./__auth-link/header__auth-link.css);
+@import url(./__mobile/__mobile.css);
+@import url(./__close/header__close.css);
+
+.header {
+  border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+  display: flex;
+  margin: 0 auto 41px;
+  width: 880px;
+  padding-bottom: 42px;
+}
+
+@media (max-width: 1024px) {
+  .header {
+    width: 80%;
+    padding-bottom: 30px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header {
+    width: 100%;
+    margin: 0 0 45px;
+  }
+}

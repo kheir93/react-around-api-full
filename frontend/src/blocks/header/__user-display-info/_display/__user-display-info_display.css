@@ -1,0 +1,7 @@
+@media (max-width: 400px) {
+  .header__user-display-info_display {
+    display: flex;
+    margin: 0 auto 18px auto;
+    grid-area: email;
+  }
+}

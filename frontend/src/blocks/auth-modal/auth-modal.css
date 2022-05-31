@@ -1,0 +1,34 @@
+@import url(./__title/auth-modal__title.css);
+@import url(./__field/auth-modal__field.css);
+@import url(./__input/auth-modal__input.css);
+@import url(./__input-error/auth-modal__input-error.css);
+@import url(./__submit/auth-modal__submit.css);
+@import url(./__status/auth-modal__status.css);
+@import url(./__status-link/auth-modal__status-link.css);
+
+.auth-modal {
+  z-index: 2;
+  /*position: relative;*/
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  color: #fff;
+  border-radius: 10px;
+  width: 30%;
+  height: 100%;
+  overflow: visible;
+  padding-bottom: 36px;
+  margin: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .auth-modal {
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .auth-modal {
+    width: 95%;
+  }
+}

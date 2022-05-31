@@ -1,0 +1,23 @@
+@import url(./__delete/card__delete.css);
+@import url(./__image/card__image.css);
+@import url(./__caption/card__caption.css);
+@import url(./__like/card__like.css);
+@import url(./__like-count/card__like-count.css);
+@import url(./__like-icon/__like-icon.css);
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: 85% auto;
+  z-index: 1;
+  background-color: #fff;
+  border-radius: 10px;
+  width: 100%;
+  padding-bottom: 22px;
+  margin: auto;
+}
+
+.card:focus {
+  outline: 0;
+}

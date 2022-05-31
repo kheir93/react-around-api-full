@@ -1,0 +1,28 @@
+@import url(./__copyright/footer__copyright.css);
+
+.footer {
+  padding-bottom: 60px;
+  margin: 67px auto 0;
+  width: 880px;
+}
+
+@media (max-width: 1024px) {
+  .footer {
+    width: 80%;
+    margin-top: 48px;
+    padding-bottom: 36px;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+
+@media (max-width: 320px) {
+  .footer {
+    width: 93%;
+    margin-top: 48px;
+    padding-bottom: 36px;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}

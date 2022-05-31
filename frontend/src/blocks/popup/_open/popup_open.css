@@ -1,0 +1,5 @@
+.popup_open {
+  z-index: 5;
+  display: flex;
+}
+
