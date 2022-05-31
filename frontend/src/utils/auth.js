@@ -1,6 +1,6 @@
 // export const BASE_URL = 'https://register.nomoreparties.co';
-// export const BASE_URL = 'https://api.kheir93.students.nomoreparties.sbs';
-export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = 'https://api.kheir93.students.nomoreparties.sbs';
+// export const BASE_URL = 'http://localhost:3000';
 
 const checkRes = (res) => {
   if (res.ok) {
