@@ -35,15 +35,15 @@ function App() {
   const history = useHistory();
 
   const handleTokenCheck = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwt");
     if (token) {
       checkToken(token).then((res) => {
         if (res) {
-          setUserEmail(res.data.email)
+          setUserEmail(res.data._id)
           setLoggedIn(true);
           history.push("/");
         } else {
-          localStorage.removeItem("token")
+          localStorage.removeItem("jwt");
         }
       })
         .catch((err) => console.log(err))

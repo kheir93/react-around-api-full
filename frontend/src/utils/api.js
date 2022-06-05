@@ -26,7 +26,7 @@ class Api {
       .then(this._checkResponse)
   }
 
-  setUserInfo(jwt, name, about) {
+  setUserInfo({ jwt, name, about }) {
     return fetch(this._baseUrl + '/users/me/', {
       method: 'PATCH',
       headers: {
@@ -80,7 +80,7 @@ class Api {
   }
 
   removeCard({ cardId, jwt }) {
-    return fetch(this._baseUrl + '/cards/' + cardId, {
+    return fetch(this._baseUrl + `/cards/'${cardId}`, {
       headers: {
         authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ class Api {
   }
 
   addLike(cardId, jwt) {
-    return fetch(this._baseUrl + '/cards/likes/' + cardId, {
+    return fetch(this._baseUrl + `/cards/${cardId}/likes/`, {
       method: 'PUT',
       headers: {
         authorization: `Bearer ${jwt}`,
@@ -102,7 +102,7 @@ class Api {
   }
 
   removeLike(cardId, jwt) {
-    return fetch(this._baseUrl + '/cards/likes/' + cardId, {
+    return fetch(this._baseUrl + `/cards/${cardId}/likes/`, {
       method: 'DELETE',
       headers: {
         authorization: `Bearer ${jwt}`,
@@ -121,12 +121,12 @@ class Api {
 //     }
 //   });
 
-const api = new Api({
-  baseUrl: 'https://api.kheir93.students.nomoreparties.sbs',
-});
-
 // const api = new Api({
-//   baseUrl: 'http://localhost:3000',
+//   baseUrl: 'https://api.kheir93.students.nomoreparties.sbs',
 // });
+
+const api = new Api({
+  baseUrl: 'http://localhost:3000',
+});
 
 export default api

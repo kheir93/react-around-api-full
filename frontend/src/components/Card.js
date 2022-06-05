@@ -7,7 +7,7 @@ export default function Card({card, onCardClick, onCardDelete, onCardLike}) {
   const currentUser = React.useContext(CurrentUserContext);
 
   //Owner card checking//
-  const isOwn = card.owner._id === currentUser._id;
+  const isOwn = card.owner === currentUser._id;
 
   //Delete button class//
   const cardDeleteButtonClassName = (

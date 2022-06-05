@@ -7,15 +7,16 @@ const SERVER_ERROR = 500;
 
 const getCards = (req, res) => {
   Card.find({})
-    .then((users) => res.status(OK).send(users))
+    .then((card) => res.status(OK).send( card ))
     .catch((err) => res.status(SERVER_ERROR).send(err));
 };
 
 const createCard = (req, res) => {
-  console.log(req.user._id);
-  Card.create({ ...req.body })
-    .then((data) => {
-      res.status(OK).send({ data });
+  const { name, link } = req.body
+  const owner = req.user._id;
+  Card.create({ name, link, owner })
+    .then((card) => {
+      res.status(OK).send({data: card});
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -27,14 +28,19 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  const { id } = req.params;
-  Card.findByIdAndRemove(id)
+  // const { cardId } = req.params;
+  Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => {
       const error = new Error('No card found with that id');
       error.statusCode = NOT_FOUND;
       throw error; // Remember to throw an error so .catch handles it instead of .then
     })
-    .then((data) => res.status(OK).send({ data }))
+    .then((card) => {
+      if (!card.ower === (req.user._id)) {
+        return Promise.reject(new Error('Not your card'));
+      }
+      Card.deleteOne(card).then(() => res.status(OK).send({ data: card }))
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad request' });

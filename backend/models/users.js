@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     match: urlRegex,
-    validate: {
-      validator: (v) => validator.isURL(v),
+    validate:
+     { validator: (v) => validator.isURL(v),
       message: 'Must be a Valid URL',
     },
     default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg'
@@ -46,12 +46,11 @@ const userSchema = new mongoose.Schema({
 }, { versionKey: false });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
-  return this.findOne({ email })
+  return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Incorrect email or password'));
       }
-
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {

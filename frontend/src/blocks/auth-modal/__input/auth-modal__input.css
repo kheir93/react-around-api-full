@@ -12,9 +12,10 @@
   padding-bottom: 14px;
 }
 
-input:-webkit-autofill {
+.auth-modal__input:-webkit-autofill {
     -webkit-background-clip: text;
-    -webkit-text-fill-color: white !important
+    -webkit-text-fill-color: white !important;
+    caret-color: #fff;
 }
 
 .auth-modal__input:focus {

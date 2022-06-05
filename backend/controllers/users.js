@@ -1,7 +1,14 @@
 const User = require('../models/users');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { NODE_ENV, JWT_SECRET } = process.env;
+
+const randomString = crypto
+  .randomBytes(16)
+  .toString('hex');
+
+console.log(randomString);
 
 const OK = 200;
 const BAD_REQUEST = 400;
@@ -21,7 +28,7 @@ const getUserById = (req, res) => {
     .orFail(() => {
       const error = new Error('No user with that ID was found');
       error.statusCode = NOT_FOUND;
-      throw error; // Remember to throw an error so .catch handles it instead of .then
+      throw error;
     })
     .then((user) => res.send({ user }))
     .catch((err) => {
@@ -49,19 +56,19 @@ const createUser = (req, res) => {
       avatar,
       email,
       password: hash,
-  }))
+    }))
     .then((user) => {
-      user.password = undefined;
       res.status(OK).send({ data: user });
-  })
-  .catch((err) => {
-    if (err.name === 'ValidationError') {
-      res.status(BAD_REQUEST).send({ message: 'Bad Request' });
-    } else {
-      res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
-    }
-  });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(BAD_REQUEST).send({ message: 'Bad Request' });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
+      }
+    });
 }
+
 
 // const login = (req, res) => {
 //   const { email, password } = req.body;
@@ -101,25 +108,24 @@ const createUser = (req, res) => {
 //     });
 // };
 
-const login = (req, res, next) => {
+const login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-test',
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-testing',
         {
           expiresIn: '7d',
         },
       );
-      user.password = undefined;
       res.send({ data: user, token });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Bad Request' });
       } else {
-        res.status(BAD_METHOD).send({ message: 'An internal error has occured' });
+        res.status(BAD_METHOD).send({ message: 'Unauthorized' });
       }
     });
 };

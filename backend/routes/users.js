@@ -5,7 +5,7 @@ const {
 
 router.post('/signup', createUser)
 router.post('/signin', login);
-router.get('/users', getUsers);
+router.get('/users/me', getUsers);
 router.get('/users/:id', getUserById);
 router.post('/users', createUser);
 router.patch('/users/me', updateUser);
