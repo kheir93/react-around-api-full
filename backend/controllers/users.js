@@ -4,11 +4,11 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const randomString = crypto
-  .randomBytes(16)
-  .toString('hex');
+// const randomString = crypto
+//   .randomBytes(16)
+//   .toString('hex');
 
-console.log(randomString);
+// console.log(randomString);
 
 const OK = 200;
 const BAD_REQUEST = 400;
@@ -23,14 +23,14 @@ const getUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  const { id } = req.params;
+  let id = new mongoose.Types.ObjectId(req.params.id);
   User.findById(id)
     .orFail(() => {
       const error = new Error('No user with that ID was found');
       error.statusCode = NOT_FOUND;
       throw error;
     })
-    .then((user) => res.send({ user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Bad request' });
@@ -39,6 +39,18 @@ const getUserById = (req, res) => {
       }
       return res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
     });
+};
+
+const getUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .orFail(() => {
+      const error = new Error('No user with that ID was found');
+      error.statusCode = NOT_FOUND;
+      throw error;
+    })
+    .then((user) => { res.status(OK).send({user}); })
+    .catch(next)
+    // .catch((err) => send(err))
 };
 
 const createUser = (req, res) => {
@@ -50,23 +62,25 @@ const createUser = (req, res) => {
       }
       return bcrypt.hash(password, 10);
     })
-    .then(hash => User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then((user) => {
-      res.status(OK).send({ data: user });
+    .then((hash) => {
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      })
+        .then((user) => {
+          res.status(OK).send({ _id: user._id, email: user.email })
+      })
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(BAD_REQUEST).send({ message: 'Bad Request' });
+        } else {
+          res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
+        }
+      });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Bad Request' });
-      } else {
-        res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
-      }
-    });
 }
 
 
@@ -108,7 +122,7 @@ const createUser = (req, res) => {
 //     });
 // };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -119,7 +133,7 @@ const login = (req, res) => {
           expiresIn: '7d',
         },
       );
-      res.send({ data: user, token });
+      res.send({ data: user.toJSON(), token });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -155,59 +169,41 @@ const login = (req, res) => {
 //     });
 // };
 
-const deleteUser = (req, res) => {
-  const { id } = req.params;
-  return User.findByIdAndRemove(id)
-    .orFail(() => {
-      const error = new Error('No user found with that id');
-      error.statusCode = NOT_FOUND;
-      throw error; // Remember to throw an error so .catch handles it instead of .then
-    })
-    .then((user) => {
-      res.status(OK).send({ user });
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Bad Request' });
-      } else {
-        res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
-      }
-    });
-};
-
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
-  const id = req.user._id;
   User.findByIdAndUpdate(
-    id,
+    req.user._id,
     { name, about },
     {
       new: true,
       runValidators: true,
-      upsert: true,
+      upsert: true
     },
   )
-    .then((user) => res.status(OK).send({ user }))
+    .then((user) => {
+      res.status(OK).send({ data: user })
+    }
+  )
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Bad Request' });
       } else {
         res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
       }
-    });
+    })
+    .catch(next)
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  const id = req.user._id;
   User.findByIdAndUpdate(
-    id,
+    req.user._id,
     { avatar },
     {
       new: true,
       runValidators: true,
-      upsert: true,
-    },
+      upsert: true
+    }
   )
     .then((data) => res.status(OK).send({ data }))
     .catch((err) => {
@@ -216,9 +212,11 @@ const updateAvatar = (req, res) => {
       } else {
         res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
       }
-    });
+      next(err);
+    })
+    .catch(next);
 };
 
 module.exports = {
-  getUsers, getUserById, createUser, deleteUser, updateUser, updateAvatar, login
+  getUsers, getUserById, createUser, updateUser, updateAvatar, login, getUser
 };

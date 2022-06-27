@@ -16,7 +16,7 @@ export default function EditAvatarPopup({ isOpen, onClose, onOverlayClick, onUpd
   return (
     <PopupWithForm onSubmit={handleSubmit}  isOpen={isOpen} onClose={onClose} onOverlayClick={onOverlayClick} name="avatar" title="Change profile picture" buttonName="Save" submitValue="Submit" >
       <label className="form__field">
-        <input type="url" className="form__input form__input_avatar" placeholder="Avatar image link" defaultValue="" name="avatarURL" id="inputAvatar" ref={ avatarRef } required/>
+        <input type="url" className="form__input form__input_avatar" placeholder="Avatar image link" name="avatarURL" id="inputAvatar" ref={ avatarRef } required/>
         <span className={'form__input-error inputAvatar-error'}>Please enter a web address.</span>
       </label>
     </PopupWithForm>

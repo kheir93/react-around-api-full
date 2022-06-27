@@ -30,25 +30,9 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [tooltipWindow, setTooltipWindow] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [token, setToken] = useState(localStorage.getItem('jwt'))
 
   const history = useHistory();
-
-  const handleTokenCheck = () => {
-    const token = localStorage.getItem("jwt");
-    if (token) {
-      checkToken(token).then((res) => {
-        if (res) {
-          setUserEmail(res.data._id)
-          setLoggedIn(true);
-          history.push("/");
-        } else {
-          localStorage.removeItem("jwt");
-        }
-      })
-        .catch((err) => console.log(err))
-    }
-  }
 
   const handleLogin = () => {
     setLoggedIn(true);
@@ -57,8 +41,9 @@ function App() {
 
   const handleLogout = () => {
     setLoggedIn(false);
-    localStorage.removeItem('token');
+    localStorage.removeItem('jwt');
     history.push('/signin');
+    setCurrentUser({})
   }
 
   const handleRegisterSubmit = (email, password) => {
@@ -80,61 +65,121 @@ function App() {
     };
 
   const handleLoginSubmit = (email, password) => {
+    if (!email || !password) {
+      return Promise.reject(new Error('User with this ID not found'))
+    }
     authorize(email, password)
-      .then((data) => {
-        if (data) {
+      .then((res) => {
+        if (res.token) {
+          setCurrentUser(res.data);
+          setToken(res.token);
+          localStorage.setItem('jwt', res.token);
           handleLogin();
-          handleTokenCheck();
+          // handleTokenCheck();
         }
+        localStorage.removeItem('jwt');
       })
       .catch((err) => console.log(err)
     )}
 
-  //Cards and profile rendering//
-  useEffect(() => {
-    api.getAppInfo()
-      .then(([profile, cardData]) => {
-        setCurrentUser(profile)
-        setCards(cardData)
-      })
-      .catch(err => console.log(err));
-  }, []);
+  // Cards and profile rendering//
+  // useEffect(() => {
+  //   const jwt = localStorage.getItem("jwt");
+  //   if (jwt && loggedIn) {
+  //   api.getAppInfo()
+  //     .then(([profile, cardData]) => {
+  //       setCurrentUser(profile)
+  //       setCards(cardData)
+  //     })
+  //     .catch(err => console.log(err));
+  //   }
+  // }, [loggedIn]);
+
+  // useEffect(() => {
+  //   const jwt = localStorage.getItem("jwt");
+  //   if (jwt && loggedIn) {
+  //     api.getUserInfo()
+  //       .then((profile) => {
+  //         setCurrentUser(profile.data)
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       })
+  //     api.getInitialCards()
+  //       .then((data) => {
+  //         setCards(data)
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       })
+  //   }
+  // }, [loggedIn])
+
+  const handleTokenCheck = () => {
+    if (token) {
+      checkToken(token)
+        .then((res) => {
+          if (!res) {
+            return res.status(400).send({
+              message: "Token is missing or expired",
+            });
+          }
+          setLoggedIn(true);
+          history.push("/");
+        })
+        .catch((err) => console.log(err))
+    } else {
+      setLoggedIn(false);
+    }
+  }
 
   useEffect(() => {
-    handleTokenCheck();
+    if (token && loggedIn) {
+      api.getInitialCards(token)
+      .then((cards) => {
+        setCards(cards)
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }
+  }, [loggedIn])
+
+  useEffect(() => {
+      handleTokenCheck(token)
   }, []);
 
   //Profile popup validation//
-  function handleUpdateUser(data) {
+  function handleUpdateUser({ name, about }) {
     api.setUserInfo({
-      name: data.name,
-      about: data.about
-    })
-      .then((profile) => {
-        setCurrentUser(profile)
-        closeAllPopups()
+      name,
+      about
+    }, token)
+      .then((res) => {
+        setCurrentUser(res.data);
+        closeAllPopups();
       })
       .catch(err => console.log(err))
   }
 
   //Avatar popup validation//
-  function handleUpdateAvatar(user) {
-    api.setUserAvatar({ avatar: user.avatar })
-      .then((profile) => {
-        setCurrentUser(profile);
+  function handleUpdateAvatar(avatar) {
+    api.setUserAvatar(avatar, token)
+      .then((res) => {
+        setCurrentUser(res.data);
         closeAllPopups()
       })
       .catch(err => console.log(err))
   }
 
   //Add new card//
-  function handleAddPlaceSubmit(data) {
+  function handleAddPlaceSubmit(card) {
     api.newCard({
-      title: data.title,
-      link: data.link
+      name: card.title,
+      link: card.link
     })
-      .then((newCard) => {
-        setCards([newCard, ...cards]);
+      .then((res) => {
+        setCards([res.data, ...cards]);
         closeAllPopups()
       })
       .catch(err => console.log(err))
@@ -147,7 +192,7 @@ function App() {
   };
 
   function handleCardDelete(card) {
-    api.removeCard({ cardId: card._id })
+    api.removeCard( card._id, token)
       .then(() => {
         setCards((cards) => cards.filter((item) => item._id !== card._id));
         closeAllPopups();
@@ -217,7 +262,7 @@ function App() {
       })
         .catch(err => console.log(err));
     } else {
-      api.addLike(card._id, !isLiked).then((newCard) => {
+      api.addLike(card._id, !isLiked ).then((newCard) => {
         setCards((state) =>
           state.map((currentCard) =>
             currentCard._id === card._id ? newCard : currentCard
@@ -231,7 +276,7 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root">
-        <Header logout={handleLogout} userEmail={userEmail} signup={<Redirect to="/signup" />} />
+        <Header logout={handleLogout} userEmail={localStorage.getItem('email')} signup={<Redirect to="/signup" />} />
         <Switch>
           <ProtectedRoute exact path="/" loggedIn={loggedIn} >
             <Main

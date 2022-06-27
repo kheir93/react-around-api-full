@@ -10,14 +10,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
     maxlength: 30,
-    default: 'Jacques Cousteau'
+    default: 'Kheireddine Allal'
   },
   about: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
-    default: 'Explorer'
+    default: 'Aspirant Web-Developer'
   },
   avatar: {
     type: String,
@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
      { validator: (v) => validator.isURL(v),
       message: 'Must be a Valid URL',
     },
-    default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg'
+    default: 'https://images.unsplash.com/photo-1590138195930-7eb34a581384?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80'
   },
   email: {
     type: String,
@@ -56,10 +56,9 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
           if (!matched) {
             return Promise.reject(new Error('Incorrect email or password'));
           }
-
           return user; // now user is available
         });
     });
 };
 
-module.exports = mongoose.model('users', userSchema);
+module.exports = mongoose.model('user', userSchema);

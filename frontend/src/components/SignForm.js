@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 
 const SignForm = ({ title, onChangePassword, onChangeEmail, authMode, authAction, password, email, link, onSubmit, onClick }) => {
 
@@ -20,4 +20,4 @@ const SignForm = ({ title, onChangePassword, onChangeEmail, authMode, authAction
   )
 }
 
-export default SignForm;
+export default withRouter(SignForm);

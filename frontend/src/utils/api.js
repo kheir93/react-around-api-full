@@ -19,33 +19,33 @@ class Api {
   getUserInfo(jwt) {
     return fetch(this._baseUrl + '/users/me', {
       headers: {
-        authorization: `Bearer ${jwt}`,
-        method: 'GET',
+        Authorization: `Bearer ${jwt}`,
+        'Content-Type': 'application/json'
       },
     })
       .then(this._checkResponse)
   }
 
-  setUserInfo({ jwt, name, about }) {
-    return fetch(this._baseUrl + '/users/me/', {
+  setUserInfo(data, jwt) {
+    return fetch(this._baseUrl + '/users/me', {
       method: 'PATCH',
       headers: {
-        authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(
-        name,
-        about
-      )
+      body: JSON.stringify({
+        name: data.name,
+        about: data.about
+      })
     })
       .then(this._checkResponse)
   }
 
-  setUserAvatar({jwt, avatar}) {
+  setUserAvatar({ avatar, jwt }) {
     return fetch(this._baseUrl + '/users/me/avatar', {
       method: 'PATCH',
       headers: {
-        authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -58,31 +58,32 @@ class Api {
   getInitialCards(jwt) {
     return fetch(this._baseUrl + '/cards', {
       headers: {
-        authorization: `Bearer ${jwt}`,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`
       },
     })
       .then(this._checkResponse)
   }
 
-  newCard({ jwt, title, link }) {
+  newCard({ title, link }, jwt) {
     return fetch(this._baseUrl + '/cards', {
       headers: {
-        authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',
       body: JSON.stringify({
         name: title,
-        link: link
+        link: link,
       })
     })
       .then(this._checkResponse)
   }
 
-  removeCard({ cardId, jwt }) {
-    return fetch(this._baseUrl + `/cards/'${cardId}`, {
+  removeCard({ cardId }, jwt) {
+    return fetch(this._baseUrl + '/cards/' + cardId, {
       headers: {
-        authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'DELETE'
@@ -91,10 +92,10 @@ class Api {
   }
 
   addLike(cardId, jwt) {
-    return fetch(this._baseUrl + `/cards/${cardId}/likes/`, {
+    return fetch(this._baseUrl + '/cards/likes/' + cardId, {
       method: 'PUT',
       headers: {
-        authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
       },
     })
@@ -102,10 +103,10 @@ class Api {
   }
 
   removeLike(cardId, jwt) {
-    return fetch(this._baseUrl + `/cards/${cardId}/likes/`, {
+    return fetch(this._baseUrl + '/cards/likes/' + cardId, {
       method: 'DELETE',
       headers: {
-        authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
       },
     })
@@ -116,7 +117,7 @@ class Api {
 // const api = new Api({
 //     baseUrl: 'https://around.nomoreparties.co/v1/group-13',
 //     headers: {
-//       authorization: "4b9bb316-6c12-461f-86a3-76e6af7325ba",
+//       Authorization: "4b9bb316-6c12-461f-86a3-76e6af7325ba",
 //       "Content-Type": "application/json"
 //     }
 //   });

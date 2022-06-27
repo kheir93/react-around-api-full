@@ -35,12 +35,13 @@ export const authorize = (email, password) => {
     body: JSON.stringify({ email, password })
   })
     .then(checkRes)
-    .then((data) => {
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        return data;
+    .then((res) => {
+      if (res.token) {
+        localStorage.setItem('jwt', res.token);
+        localStorage.setItem('email', email);
+        return res;
       } else {
-        return;
+        return
       }
     })
 };
@@ -51,11 +52,13 @@ export const checkToken = (token) => {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     }
   })
     .then(checkRes)
-    .then(data => data)
+    .then((data) => {
+      return data
+    })
 };
 
 
