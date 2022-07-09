@@ -9,13 +9,13 @@ export default function Card({card, onCardClick, onCardDelete, onCardLike}) {
   //Owner card checking//
   const isOwn = card.owner === currentUser._id;
 
+  //Like own//
+  const isLiked = card.likes.some(user => user === currentUser._id);
+
   //Delete button class//
   const cardDeleteButtonClassName = (
     `card__delete ${isOwn ? 'card__delete_visible' : 'card__delete_hidden'}`
   );
-
-  //Like ownage//
-  const isLiked = card.likes.some(user => user._id === currentUser._id);
 
   //Like management//
   const cardLikeButtonClassName = (

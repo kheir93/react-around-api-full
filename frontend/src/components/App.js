@@ -163,8 +163,8 @@ function App() {
   }
 
   //Avatar popup validation//
-  function handleUpdateAvatar(avatar) {
-    api.setUserAvatar(avatar, token)
+  function handleUpdateAvatar(user) {
+    api.setUserAvatar({avatar: user.avatar}, token)
       .then((res) => {
         setCurrentUser(res.data);
         closeAllPopups()
@@ -175,9 +175,9 @@ function App() {
   //Add new card//
   function handleAddPlaceSubmit(card) {
     api.newCard({
-      name: card.title,
+      title: card.title,
       link: card.link
-    })
+    }, token)
       .then((res) => {
         setCards([res.data, ...cards]);
         closeAllPopups()
@@ -192,13 +192,58 @@ function App() {
   };
 
   function handleCardDelete(card) {
-    api.removeCard( card._id, token)
+    api.removeCard( card._id , token)
       .then(() => {
         setCards((cards) => cards.filter((item) => item._id !== card._id));
         closeAllPopups();
       })
       .catch((err) => console.log(err));
   };
+
+  //Likes handling//
+  function handleCardLike(card) {
+    //Like status//
+    const isLiked = card.likes.some((user) => user === currentUser._id);
+    //Like status management//
+    if (isLiked) {
+      api.removeLike(card._id, token).then((res) => {
+        setCards((state) => state.map((currentCard) =>
+          currentCard._id === card._id ? res.data : currentCard
+          )
+        )
+      })
+        .catch(err => console.log(err));
+    } else {
+      api.addLike(card._id, token).then((res) => {
+        setCards((state) =>
+          state.map((currentCard) =>
+            currentCard._id === card._id ? res.data : currentCard
+          )
+        )
+      })
+        .catch(err => console.log(err));
+    }
+  }
+
+  // function handleCardLike(card) {
+  //   //Like status//
+  //   const isLiked = card.likes.some((user) => user === currentUser._id);
+  //   //Like status management//
+  //   isLiked ? api.removeLike(card._id, token)
+  //     .then((res) => {
+  //       const newCard = cards.map((currentCard) => currentCard._id === card._id ? res.data : currentCard)
+  //       setCards((newCard)
+  //       )
+  //     })
+  //     .catch(err => console.log(err))
+  //     : api.addLike(card._id, token)
+  //       .then((res) => {
+  //         const newCard = cards.map((currentCard) => currentCard._id === card._id ? res.data : currentCard)
+  //         setCards((newCard)
+  //         )
+  //       })
+  //       .catch(err => console.log(err));
+  // }
 
   //Profile button//
   function handleEditProfileClick() {
@@ -247,31 +292,6 @@ function App() {
       closeAllPopups()
     }
   };
-
-  //Likes handling//
-  function handleCardLike(card) {
-    //Like status//
-    const isLiked = card.likes.some(user => user._id === currentUser._id);
-    //Like status management//
-    if (isLiked) {
-      api.removeLike(card._id, isLiked).then((newCard) => {
-        setCards((state) => state.map((currentCard) =>
-          currentCard._id === card._id ? newCard : currentCard
-        )
-        )
-      })
-        .catch(err => console.log(err));
-    } else {
-      api.addLike(card._id, !isLiked ).then((newCard) => {
-        setCards((state) =>
-          state.map((currentCard) =>
-            currentCard._id === card._id ? newCard : currentCard
-          )
-        )
-      })
-        .catch(err => console.log(err));
-    }
-  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>

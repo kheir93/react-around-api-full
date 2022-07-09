@@ -41,7 +41,7 @@ class Api {
       .then(this._checkResponse)
   }
 
-  setUserAvatar({ avatar, jwt }) {
+  setUserAvatar({ avatar }, jwt) {
     return fetch(this._baseUrl + '/users/me/avatar', {
       method: 'PATCH',
       headers: {
@@ -65,22 +65,22 @@ class Api {
       .then(this._checkResponse)
   }
 
-  newCard({ title, link }, jwt) {
+  newCard( data , jwt) {
     return fetch(this._baseUrl + '/cards', {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${jwt}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      method: 'POST',
       body: JSON.stringify({
-        name: title,
-        link: link,
+        name: data.title,
+        link: data.link
       })
     })
       .then(this._checkResponse)
   }
 
-  removeCard({ cardId }, jwt) {
+  removeCard(cardId , jwt) {
     return fetch(this._baseUrl + '/cards/' + cardId, {
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -91,7 +91,7 @@ class Api {
       .then(this._checkResponse)
   }
 
-  addLike(cardId, jwt) {
+  addLike(cardId , jwt) {
     return fetch(this._baseUrl + '/cards/likes/' + cardId, {
       method: 'PUT',
       headers: {

@@ -14,8 +14,8 @@ const getCards = (req, res) => {
 const createCard = (req, res, next) => {
   const { name, link } = req.body
   const owner = req.user._id;
-  Card.create( name, link, owner )
-    .then((card) => res.status(OK).send(card))
+  Card.create({ name, link, owner })
+    .then((card) => res.status(OK).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send(err);
@@ -56,7 +56,7 @@ const likeCard = (req, res, next) => {
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
-  .then((card) => res.status(OK).send({ data: card }))
+  .then((user) => res.status(OK).send({ data: user }))
   .catch((err) => {
     if (err.name === 'CastError') {
       return res.status(BAD_REQUEST).send({ message: 'Bad request' });
@@ -73,7 +73,7 @@ const dislikeCard = (req, res) => {
   { $pull: { likes: req.user._id } },
   { new: true },
 )
-  .then((card) => res.status(OK).send({ data: card }))
+  .then((user) => res.status(OK).send({ data: user }))
   .catch((err) => {
     if (err.name === 'CastError') {
       return res.status(BAD_REQUEST).send({ message: 'Bad request' });

@@ -1,28 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const auth = require('./middlewares/auth');
 const helmet = require('helmet');
 require('dotenv').config()
+const app = express();
+const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/aroundb', {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  // useUnifiedTopology: true,
 });
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-const app = express();
+
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 let cors = require("cors");
-
-app.use(cors());
-app.options('*', cors());
-
-const { PORT = 3000 } = process.env;
-app.use(express.json({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
-
 
 // app.use((req, res, next) => {
 //   res.header = (
@@ -32,7 +27,8 @@ app.use(express.urlencoded({ extended: true }));
 
 //   next();
 // });
-
+app.use(helmet());
+app.use(requestLogger);
 app.use((req, res, next) => {
   res.header(
     'Access-Control-Allow-Origin',
@@ -46,8 +42,8 @@ app.use((req, res, next) => {
   next();
 });
 
-
-app.use(requestLogger);
+app.use(cors());
+app.options('*', cors());
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -55,15 +51,12 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use(helmet());
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
 
-app.use(auth);
-
 app.use(errorLogger);
 
-// app.use('*', (req, res) => res.status(404).send({ message: 'Requested resource not found' }));
+app.use('*', (req, res) => res.status(404).send({ message: 'Requested resource not found' }));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}...`);

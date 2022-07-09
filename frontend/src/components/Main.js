@@ -20,11 +20,10 @@ export default function Main({onEditAvatarClick, onEditProfileClick, onAddPlaceC
         <ul className="elements">
           {cards.map((card) => (
             <Card
+              onCardLike={onCardLike}
               key={card._id}
-              like={card.like}
               card={card}
               onCardClick={onCardClick}
-              onCardLike={onCardLike}
               onCardDelete={onCardDelete}
             />))}
         </ul>
