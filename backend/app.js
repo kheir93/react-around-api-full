@@ -2,9 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const helmet = require('helmet');
+const errorMiddleware = require('./middlewares/errorMiddleware');
 require('dotenv').config()
 const app = express();
 const { PORT = 3000 } = process.env;
+const NOT_FOUND = 404;
 
 mongoose.connect('mongodb://localhost:27017/aroundb', {
   useNewUrlParser: true,
@@ -56,7 +58,7 @@ app.use('/', cardsRouter);
 
 app.use(errorLogger);
 
-app.use('*', (req, res) => res.status(404).send({ message: 'Requested resource not found' }));
+app.use('*', (req, res, next) => next(new errorMiddleware('Requested resource not found', NOT_FOUND)));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}...`);

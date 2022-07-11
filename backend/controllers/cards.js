@@ -1,3 +1,4 @@
+const errorMiddleware = require('../middlewares/errorMiddleware');
 const Card = require('../models/cards');
 
 const OK = 200;
@@ -5,10 +6,13 @@ const BAD_REQUEST = 400;
 const NOT_FOUND = 404;
 const SERVER_ERROR = 500;
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
+    .orFail(() => {
+      throw new errorMiddleware('No card found with thiis id', NOT_FOUND)
+    })
     .then((cards) => res.status(OK).send( cards ))
-    .catch((err) => res.status(SERVER_ERROR).send(err));
+    .catch(next);
 };
 
 const createCard = (req, res, next) => {
@@ -18,36 +22,33 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(OK).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send(err);
+        next(new errorMiddleware('Bad request', BAD_REQUEST));
       } else {
-        res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
+        return next(new errorMiddleware('An internal error has occured', SERVER_ERROR));
       }
       return next(err);
     });
 };
 
-const deleteCard = (req, res) => {
-  // const { cardId } = req.params;
-  Card.findByIdAndRemove(req.params.cardId)
+const deleteCard = (req, res, next) => {
+  const { cardId } = req.params;
+  Card.findByIdAndRemove(cardId)
     .orFail(() => {
-      const error = new Error('No card found with that id');
-      error.statusCode = NOT_FOUND;
-      throw error; // Remember to throw an error so .catch handles it instead of .then
+      throw new errorMiddleware('No card found with this id', NOT_FOUND)
     })
     .then((card) => {
-      if (!card.ower === (req.user._id)) {
-        return Promise.reject(new Error('Not your card'));
+      if (!card.ower === req.user._id.toString()) {
+        return Promise.reject(new errorMiddleware('Not your card'));
       }
       Card.deleteOne(card).then(() => res.status(OK).send({ data: card }))
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({ message: 'Bad request' });
-      } if (err.statusCode === NOT_FOUND) {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return next(new errorMiddleware('Bad request', BAD_REQUEST));
       }
-      return res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
-    });
+      return next(new errorMiddleware('An internal error has occured', SERVER_ERROR));
+    })
+    .catch(next)
 };
 
 const likeCard = (req, res, next) => {
@@ -59,15 +60,13 @@ const likeCard = (req, res, next) => {
   .then((user) => res.status(OK).send({ data: user }))
   .catch((err) => {
     if (err.name === 'CastError') {
-      return res.status(BAD_REQUEST).send({ message: 'Bad request' });
-    } if (err.statusCode === NOT_FOUND) {
-      return res.status(NOT_FOUND).send({ message: err.message });
+      return next(new errorMiddleware('Bad request', BAD_REQUEST))
     }
-    return next(err);
+    return next(new errorMiddleware('An internal error has occured', SERVER_ERROR));
   });
 }
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } },
@@ -76,11 +75,9 @@ const dislikeCard = (req, res) => {
   .then((user) => res.status(OK).send({ data: user }))
   .catch((err) => {
     if (err.name === 'CastError') {
-      return res.status(BAD_REQUEST).send({ message: 'Bad request' });
-    } if (err.statusCode === NOT_FOUND) {
-      return res.status(NOT_FOUND).send({ message: err.message });
+      return next(new errorMiddleware('Bad request', BAD_REQUEST))
     }
-    return res.status(SERVER_ERROR).send({ message: 'An internal error has occured' });
+    return next(new errorMiddleware('An internal error has occured', SERVER_ERROR));
   });
 }
 
